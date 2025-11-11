@@ -1,0 +1,38 @@
+{
+  "name": "avantis-earn-automation",
+  "version": "0.0.1-alpha.9",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:cache": "synpress",
+    "build:cache:force": "synpress --force",
+    "build:cache:headless": "synpress --headless",
+    "build:cache:basic": "npx synpress cache:create --force",
+    "test:playwright:headful": "playwright test",
+    "test:playwright:headless": "HEADLESS=true playwright test",
+    "test:playwright:headless:ui": "HEADLESS=true playwright test --ui",
+    "test:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.44.0",
+    "@synthetixio/synpress": "^4.1.1",
+    "axios": "^1.8.2",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.15.0",
+    "winston": "^3.17.0"
+  },
+  "resolutions": {
+    "rollup": "npm:@rollup/wasm-node"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.19",
+    "brace-expansion": ">=2.0.2",
+    "cypress": "13.13.0",
+    "serve": "14.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "5.3.3"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.21.3"
+  }
+}
