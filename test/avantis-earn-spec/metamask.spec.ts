@@ -28,5 +28,8 @@ testCon(
     await page.getByText("MetaMask").click();
     await metamask.connectToDapp(["Account 1"]);
     await page.waitForTimeout(3000);
+    await page.getByRole("button", { name: "Sign" }).click();
+    await metamask.confirmSignature();
+    await page.waitForTimeout(2000);
   }
 );
