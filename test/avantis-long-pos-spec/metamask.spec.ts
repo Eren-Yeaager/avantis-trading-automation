@@ -5,9 +5,9 @@ import {
   metaMaskFixtures,
 } from "@synthetixio/synpress/playwright";
 import basicSetup from "../wallet-setup/basic.setup";
-const testCon = testWithSynpress(metaMaskFixtures(basicSetup));
-testCon(
-  "Verify that user is able to connect wallet to Avatis",
+const test = testWithSynpress(metaMaskFixtures(basicSetup));
+test(
+  "Verify that user is able to connect wallet to Avantis",
   async ({ context, page, metamaskPage, extensionId }) => {
     const metamask = new MetaMask(
       context,
@@ -31,5 +31,6 @@ testCon(
     await page.getByRole("button", { name: "Sign" }).click();
     await metamask.confirmSignature();
     await page.waitForTimeout(2000);
+
   }
 );
