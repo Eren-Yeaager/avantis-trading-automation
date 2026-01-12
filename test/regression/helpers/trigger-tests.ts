@@ -1,86 +1,73 @@
-import { monitorPriceUntilTrigger } from "../utils/price-monitor";
-import { TradePage } from "../../trades/TradePage";
+import { scenarioLimitOrderTrigger } from "./scenarios/triggers/limit-order-trigger.scenario";
+import { scenarioTakeProfitTrigger } from "./scenarios/triggers/take-profit-trigger.scenario";
+import { scenarioStopLossTrigger } from "./scenarios/triggers/stop-loss-trigger.scenario";
+import { scenarioTPSLNearPrice } from "./scenarios/triggers/tp-sl-near-price.scenario";
+import { scenarioTPSLPriceSpike } from "./scenarios/triggers/tp-sl-price-spike.scenario";
+import { scenarioEditTPSLNearTrigger } from "./scenarios/triggers/edit-tp-sl-near-trigger.scenario";
 
 export async function testLimitOrderTrigger(
-    page: any,
-    assetPair: string,
-    limitPrice: string,
-    priceThreshold: number
+  page: any,
+  assetPair: string,
+  limitPrice: string,
+  priceThreshold: number
 ): Promise<boolean> {
-    const tradePage = new TradePage(page);
-
-    await tradePage.selectAssetPair(assetPair);
-    await tradePage.selectOrderType('limit');
-    await tradePage.fillLimitPrice(limitPrice);
-    await tradePage.fillTradeDetails("1", "10");
-    await tradePage.placeLongOrder('limit');
-
-    const limitPriceNum = parseFloat(limitPrice);
-    const result = await monitorPriceUntilTrigger(
-        page,
-        assetPair,
-        limitPriceNum,
-        'above',
-        60000
-    );
-
-    const orderStatus = await page
-        .locator('[data-testid="order-status"]')
-        .textContent();
-
-    return result.triggered && orderStatus?.includes('executed') === true;
+  return await scenarioLimitOrderTrigger(
+    page,
+    assetPair,
+    limitPrice,
+    priceThreshold
+  );
 }
 
 export async function testTakeProfitTrigger(
-    page: any,
-    assetPair: string,
-    takeProfitPrice: string,
-    priceThreshold: number
+  page: any,
+  assetPair: string,
+  takeProfitPrice: string,
+  priceThreshold: number
 ): Promise<boolean> {
-    const tradePage = new TradePage(page);
-
-    await tradePage.selectAssetPair(assetPair);
-    await tradePage.fillTradeDetails("1", "10");
-    await tradePage.placeLongMarketOrder();
-
-    const tpInput = page.getByTestId('take-profit-input');
-    await tpInput.fill(takeProfitPrice);
-
-    const tpPriceNum = parseFloat(takeProfitPrice);
-    const result = await monitorPriceUntilTrigger(
-        page,
-        assetPair,
-        tpPriceNum,
-        'above',
-        120000
-    );
-
-    return result.triggered;
+  return await scenarioTakeProfitTrigger(
+    page,
+    assetPair,
+    takeProfitPrice,
+    priceThreshold
+  );
 }
 
 export async function testStopLossTrigger(
-    page: any,
-    assetPair: string,
-    stopLossPrice: string,
-    priceThreshold: number
+  page: any,
+  assetPair: string,
+  stopLossPrice: string,
+  priceThreshold: number
 ): Promise<boolean> {
-    const tradePage = new TradePage(page);
+  return await scenarioStopLossTrigger(
+    page,
+    assetPair,
+    stopLossPrice,
+    priceThreshold
+  );
+}
 
-    await tradePage.selectAssetPair(assetPair);
-    await tradePage.fillTradeDetails("1", "10");
-    await tradePage.placeLongMarketOrder();
+export async function testTPSLNearPrice(
+  page: any,
+  assetPair: string,
+  triggerType: "tp" | "sl",
+  priceOffset?: number
+): Promise<boolean> {
+  return await scenarioTPSLNearPrice(page, assetPair, triggerType, priceOffset);
+}
 
-    const slInput = page.getByTestId('stop-loss-input');
-    await slInput.fill(stopLossPrice);
+export async function testTPSLPriceSpike(
+  page: any,
+  assetPair: string,
+  triggerType: "tp" | "sl"
+): Promise<boolean> {
+  return await scenarioTPSLPriceSpike(page, assetPair, triggerType);
+}
 
-    const slPriceNum = parseFloat(stopLossPrice);
-    const result = await monitorPriceUntilTrigger(
-        page,
-        assetPair,
-        slPriceNum,
-        'below',
-        120000
-    );
-
-    return result.triggered;
+export async function testEditTPSLNearTrigger(
+  page: any,
+  assetPair: string,
+  triggerType: "tp" | "sl"
+): Promise<boolean> {
+  return await scenarioEditTPSLNearTrigger(page, assetPair, triggerType);
 }

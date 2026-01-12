@@ -6,16 +6,17 @@ import {
   metaMaskFixtures,
 } from "@synthetixio/synpress/playwright";
 import connectedSetup from "../../wallet-setup/connected.setup";
-import { testCancelEditRaceCondition } from "../helpers/race-condition-tests";
+import { testMarketImmediateClose } from "../helpers/market-tests";
 import { REGRESSION_SCENARIOS } from "../regression-config";
+import { generateMetricsReport } from "../utils/metrics";
 
 const testCon = testWithSynpress(metaMaskFixtures(connectedSetup));
 
-const raceConditionScenarios = REGRESSION_SCENARIOS.filter(
-  (s) => s.category === "race-condition"
+const marketScenarios = REGRESSION_SCENARIOS.filter(
+  (s) => s.category === "market"
 );
 
-for (const config of raceConditionScenarios) {
+for (const config of marketScenarios) {
   testCon(
     config.testName,
     async ({ context, page, metamaskPage, extensionId }) => {
@@ -31,7 +32,7 @@ for (const config of raceConditionScenarios) {
       await page.getByText("Launch App").first().click();
       await page.waitForTimeout(2000);
 
-      const result = await testCancelEditRaceCondition(
+      const result = await testMarketImmediateClose(
         page,
         config.assetPair,
         async () => {
@@ -42,7 +43,12 @@ for (const config of raceConditionScenarios) {
           }
         }
       );
+
       expect(result).toBe(true);
     }
   );
 }
+
+testCon.afterAll(() => {
+  console.log(generateMetricsReport());
+});

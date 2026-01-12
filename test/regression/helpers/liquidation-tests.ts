@@ -1,42 +1,26 @@
-import { TradePage } from "../../trades/TradePage";
-import { monitorPriceUntilTrigger, getCurrentPrice } from "../utils/price-monitor";
+import { scenarioForceLiquidationByCollateral } from "./scenarios/liquidation/force-by-collateral.scenario";
+import { scenarioSimulatedPriceMovement } from "./scenarios/liquidation/simulated-price-movement.scenario";
 
-export async function testLiquidationSingleExecution(
-    page: any,
-    assetPair: string
+export async function testForceLiquidationByCollateral(
+  page: any,
+  assetPair: string,
+  metamaskConfirmation?: () => Promise<void>
 ): Promise<boolean> {
-    const tradePage = new TradePage(page);
+  return await scenarioForceLiquidationByCollateral(
+    page,
+    assetPair,
+    metamaskConfirmation
+  );
+}
 
-    await tradePage.selectAssetPair(assetPair);
-    await tradePage.fillTradeDetails("1", "50");
-    await tradePage.placeLongMarketOrder();
-
-    const initialPositions = await page
-        .locator('[data-testid^="position-"]')
-        .count();
-
-    const currentPrice = await getCurrentPrice(page, assetPair);
-    const liquidationPrice = currentPrice * 0.98;
-
-    await monitorPriceUntilTrigger(
-        page,
-        assetPair,
-        liquidationPrice,
-        'below',
-        300000
-    );
-
-    await page.waitForTimeout(5000);
-
-    const finalPositions = await page
-        .locator('[data-testid^="position-"]')
-        .count();
-
-    const liquidationExecuted = finalPositions === initialPositions - 1;
-
-    const liquidationEvents = await page
-        .locator('[data-testid="liquidation-event"]')
-        .count();
-
-    return liquidationExecuted && liquidationEvents === 1;
+export async function testSimulatedPriceMovement(
+  page: any,
+  assetPair: string,
+  metamaskConfirmation?: () => Promise<void>
+): Promise<boolean> {
+  return await scenarioSimulatedPriceMovement(
+    page,
+    assetPair,
+    metamaskConfirmation
+  );
 }

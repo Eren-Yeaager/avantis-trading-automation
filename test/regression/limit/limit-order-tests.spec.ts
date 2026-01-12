@@ -6,16 +6,20 @@ import {
   metaMaskFixtures,
 } from "@synthetixio/synpress/playwright";
 import connectedSetup from "../../wallet-setup/connected.setup";
-import { testCancelEditRaceCondition } from "../helpers/race-condition-tests";
+import {
+  testCancelLimitBeforeExecution,
+  testEditLimitPriceRapidly,
+} from "../helpers/limit-tests";
 import { REGRESSION_SCENARIOS } from "../regression-config";
+import { generateMetricsReport } from "../utils/metrics";
 
 const testCon = testWithSynpress(metaMaskFixtures(connectedSetup));
 
-const raceConditionScenarios = REGRESSION_SCENARIOS.filter(
-  (s) => s.category === "race-condition"
+const limitScenarios = REGRESSION_SCENARIOS.filter(
+  (s) => s.category === "limit"
 );
 
-for (const config of raceConditionScenarios) {
+for (const config of limitScenarios) {
   testCon(
     config.testName,
     async ({ context, page, metamaskPage, extensionId }) => {
@@ -31,18 +35,21 @@ for (const config of raceConditionScenarios) {
       await page.getByText("Launch App").first().click();
       await page.waitForTimeout(2000);
 
-      const result = await testCancelEditRaceCondition(
-        page,
-        config.assetPair,
-        async () => {
-          try {
-            await metamask.confirmSignature();
-          } catch (e) {
-            console.log("MetaMask signature handling:", e);
-          }
-        }
-      );
+      let result: boolean;
+
+      if (config.testName.includes("Cancel")) {
+        result = await testCancelLimitBeforeExecution(page, config.assetPair);
+      } else if (config.testName.includes("Edit")) {
+        result = await testEditLimitPriceRapidly(page, config.assetPair);
+      } else {
+        throw new Error(`Unknown limit test: ${config.testName}`);
+      }
+
       expect(result).toBe(true);
     }
   );
 }
+
+testCon.afterAll(() => {
+  console.log(generateMetricsReport());
+});
