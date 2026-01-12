@@ -1,4 +1,3 @@
-
 # Playwright
 node_modules/
 /test-results/
@@ -6,5 +5,21 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-.cache-synpress
+
+# Environment
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

@@ -1,13 +1,16 @@
 {
   "venvPath": ".",
   "venv": ".",
-  "pythonVersion": "3.9",
+  "pythonVersion": "3.14",
   "pythonPlatform": "Darwin",
   "executionEnvironments": [
     {
       "root": "test/regression",
-      "pythonVersion": "3.9",
-      "pythonPlatform": "Darwin"
+      "pythonVersion": "3.14",
+      "pythonPlatform": "Darwin",
+      "extraPaths": [
+        "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages"
+      ]
     }
   ]
 }
