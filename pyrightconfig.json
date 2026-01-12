@@ -1,0 +1,13 @@
+{
+  "venvPath": ".",
+  "venv": ".",
+  "pythonVersion": "3.9",
+  "pythonPlatform": "Darwin",
+  "executionEnvironments": [
+    {
+      "root": "test/regression",
+      "pythonVersion": "3.9",
+      "pythonPlatform": "Darwin"
+    }
+  ]
+}
