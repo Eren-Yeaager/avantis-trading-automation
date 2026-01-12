@@ -54,4 +54,28 @@ export class TradePage {
     await this.placeOrderButton.click();
     await this.confirmLongButton.click();
   }
+
+  async selectOrderType(orderType: string) {
+    const orderTypeButton = this.page.getByRole('button', { name: new RegExp(orderType, 'i') }).or(
+      this.page.locator(`[data-testid="order-type-${orderType}"]`)
+    );
+    await orderTypeButton.click();
+    await this.page.waitForTimeout(500);
+  }
+
+  async fillLimitPrice(price: string) {
+    const limitPriceInput = this.page.getByTestId('limit-price-input').or(
+      this.page.locator('input[placeholder*="limit" i]')
+    );
+    await limitPriceInput.fill(price);
+    await this.page.waitForTimeout(500);
+  }
+
+  async placeLongOrder(orderType: string) {
+    await this.placeOrderButton.click();
+    const confirmButton = this.page.getByRole('button', { 
+      name: new RegExp(`confirm.*${orderType}.*long`, 'i') 
+    }).or(this.confirmLongButton);
+    await confirmButton.click();
+  }
 }
