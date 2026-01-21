@@ -36,7 +36,7 @@ for (const config of latencyScenarios) {
           page,
           config.assetPair,
           config.expectedMaxLatency || 5000,
-          "1",
+          "10",
           "10",
           async () => {
             try {
@@ -47,7 +47,9 @@ for (const config of latencyScenarios) {
           }
         );
 
-        console.log(`Order Placement Latency at Market Open: ${latency}ms`);
+        console.log(
+          `Order Placement Latency at Market Open (${config.assetPair}): ${latency}ms`
+        );
       } else if (config.testName.includes("Close")) {
         await page.getByText("Launch App").first().click();
         await page.waitForTimeout(2000);
@@ -55,7 +57,7 @@ for (const config of latencyScenarios) {
           page,
           config.assetPair,
           config.expectedMaxLatency || 5000,
-          "1",
+          "10",
           "10",
           async () => {
             try {
@@ -66,7 +68,9 @@ for (const config of latencyScenarios) {
           }
         );
 
-        console.log(`Position Closure Latency at Market Close: ${latency}ms`);
+        console.log(
+          `Position Closure Latency at Market Close (${config.assetPair}): ${latency}ms`
+        );
       }
     }
   );
